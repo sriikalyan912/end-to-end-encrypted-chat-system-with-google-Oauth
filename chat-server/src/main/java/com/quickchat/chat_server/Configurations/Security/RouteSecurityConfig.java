@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -13,22 +14,24 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class RouteSecurityConfig {
 
     private JwtService jwtService;
-    private UserService userService;
+    private UserDetailsService userDetailsService;
 
     public RouteSecurityConfig(
             JwtService jwtService,
-            UserService userService
+            UserDetailsService userDetailsService
     ) {
         this.jwtService = jwtService;
-        this.userService = userService;
+        this.userDetailsService = userDetailsService;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(this.jwtService, this.userService);
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(this.jwtService, this.userDetailsService);
         return httpSecurity.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**")
+                        .permitAll()
+                        .requestMatchers("/ws-chat/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated())

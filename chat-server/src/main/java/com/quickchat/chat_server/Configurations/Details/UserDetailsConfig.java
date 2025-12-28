@@ -1,4 +1,4 @@
-package com.quickchat.chat_server.Configurations.Security;
+package com.quickchat.chat_server.Configurations.Details;
 
 import com.quickchat.chat_server.Services.UserService;
 import org.springframework.context.annotation.Bean;
